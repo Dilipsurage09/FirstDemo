@@ -3,27 +3,10 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo Installing dependencies
-      - yum update -y                      
-      - yum install -y unzip curl
+      - echo Installing dependencies...
   build:
     commands:
       - echo Build started on `date`
-      - echo Listing files in current directory
-      - ls -l
-      - echo Searching for zip file
-      - ZIP_FILE=$(find . -name "*.zip" | head -n 1)
-      - echo "Zip file found: $ZIP_FILE"
-      - if [ -z "$ZIP_FILE" ]; then echo "No zip file found. Exiting." && exit 1; fi
-      - echo Creating temp directory
-      - mkdir -p /tmp/unzipped
-      - chmod 777 /tmp/unzipped                      # Ensure full permissions
-      - echo Checking zip file integrity
-      - unzip -t "$ZIP_FILE" || (echo "Zip file is corrupted. Exiting." && exit 1)
-      - echo Unzipping source code
-      - unzip -o "$ZIP_FILE" -d /tmp/unzipped || (echo "Unzip failed. Exiting." && exit 1)
-      - echo Listing files in /tmp/unzipped
-      - ls -l /tmp/unzipped
   post_build:
     commands:
       - echo Build completed on `date`
