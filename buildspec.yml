@@ -2,24 +2,43 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      python: 3.8
     commands:
+      - echo "Updating package list..."
+      - apt update -y
       - echo "Installing dependencies..."
-      - pip install -r requirements.txt -t lib
+      - apt install -y unzip nginx
+      - echo "Dependencies installed successfully"
+  pre_build:
+    commands:
+      - echo "Preparing build environment..."
+      - mkdir -p /tmp/unzipped
+      - echo "Build environment ready"
   build:
     commands:
-      - echo "Zipping deployment package..."
-      - cd lib
-      - zip -r9 ../deployment_package.zip .
-      - cd ..
-      - zip -g deployment_package.zip lambda_function.py
+      - echo "Build started on `date`"
+      - echo "Searching for zip file"
+      - ZIP_FILE=$(find . -name "*.zip" | head -n 1)
+      - echo "Zip file found: $ZIP_FILE"
+      - if [ -z "$ZIP_FILE" ]; then echo "No zip file found. Exiting." && exit 1; fi
+      - echo "Checking zip file integrity"
+      - unzip -t "$ZIP_FILE"
+      - echo "Unzipping source code"
+      - unzip -o "$ZIP_FILE" -d /tmp/unzipped
+      - echo "Listing files in /tmp/unzipped"
+      - ls -l /tmp/unzipped
+      - echo "Copying files to Nginx web root"
+      - cp -r /tmp/unzipped/* /var/www/html/
+      - echo "Files copied successfully"
   post_build:
     commands:
-      - echo "Updating Lambda Function..."
-      - aws lambda update-function-code --function-name test --zip-file fileb://deployment_package.zip
-      - echo "DONE!!"
-
+      - echo "Restarting Nginx"
+      - systemctl restart nginx
+      - echo "Nginx restarted successfully"
+      - echo "Build completed on `date`"
 artifacts:
   files:
-    - deployment_package.zip
+    - '**/*'
+  discard-paths: yes
+cache:
+  paths:
+    - '/tmp/unzipped/**/*'
