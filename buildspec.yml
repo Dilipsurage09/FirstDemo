@@ -4,19 +4,23 @@ phases:
   install:
     commands:
       - echo Installing dependencies
-      - apt update -y
-      - apt install -y unzip curl
+      - yum update -y                      # Use yum instead of apt
+      - yum install -y unzip curl
   build:
     commands:
       - echo Build started on `date`
       - echo Listing files in current directory
       - ls -l
       - echo Searching for zip file
-      - find . -name "*.zip"
+      - ZIP_FILE=$(find . -name "*.zip" | head -n 1)
+      - echo "Zip file found: $ZIP_FILE"
+      - if [ -z "$ZIP_FILE" ]; then echo "No zip file found. Exiting." && exit 1; fi
       - echo Creating temp directory
       - mkdir -p /tmp/unzipped
+      - echo Checking zip file integrity
+      - unzip -l "$ZIP_FILE"
       - echo Unzipping source code
-      - unzip -o $(find . -name "*.zip" | head -n 1) -d /tmp/unzipped
+      - unzip -o "$ZIP_FILE" -d /tmp/unzipped
       - echo Listing files in /tmp/unzipped
       - ls -l /tmp/unzipped
   post_build:
