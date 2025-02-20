@@ -4,13 +4,17 @@ phases:
   install:
     commands:
       - echo Installing dependencies
-      - apt-get update -y
-      - apt-get install -y unzip curl
+      - yum update -y
+      - yum install -y unzip curl
   build:
     commands:
       - echo Build started on `date`
-      - echo Building the application
-      - unzip source-code.zip -d /var/www/html
+      - echo Listing files in current directory
+      - ls -l
+      - echo Searching for zip file
+      - find . -name "*.zip"
+      - echo Unzipping source code
+      - unzip -o $(find . -name "*.zip" | head -n 1) -d /var/www/html
   post_build:
     commands:
       - echo Build completed on `date`
