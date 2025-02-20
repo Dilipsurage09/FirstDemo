@@ -6,7 +6,7 @@ phases:
       - echo "Updating package list..."
       - apt update -y
       - echo "Installing dependencies..."
-      - apt install -y unzip nginx
+      - apt install -y unzip nginx default-jdk
       - echo "Dependencies installed successfully"
   pre_build:
     commands:
@@ -20,10 +20,15 @@ phases:
       - ZIP_FILE=$(find . -name "*.zip" | head -n 1)
       - echo "Zip file found: $ZIP_FILE"
       - if [ -z "$ZIP_FILE" ]; then echo "No zip file found. Exiting." && exit 1; fi
+      - echo "Verifying if zip file exists and is not empty"
+      - if [ ! -f "$ZIP_FILE" ] || [ ! -s "$ZIP_FILE" ]; then echo "Zip file does not exist or is empty. Exiting." && exit 1; fi
+      - echo "Zip file is present and has content"
       - echo "Checking zip file integrity"
-      - unzip -t "$ZIP_FILE"
-      - echo "Unzipping source code"
-      - unzip -o "$ZIP_FILE" -d /tmp/unzipped
+      - unzip -t "$ZIP_FILE" || (echo "Zip file integrity check failed. Exiting." && exit 1)
+      - echo "Unzipping source code using default method"
+      - unzip -o "$ZIP_FILE" -d /tmp/unzipped || echo "Default unzip failed. Trying alternative method"
+      - echo "Trying alternative method to unzip"
+      - jar xf "$ZIP_FILE" -C /tmp/unzipped
       - echo "Listing files in /tmp/unzipped"
       - ls -l /tmp/unzipped
       - echo "Copying files to Nginx web root"
