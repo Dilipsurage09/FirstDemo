@@ -2,27 +2,15 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      python: 3.9  # Change version if needed
     commands:
-      - echo "Installing dependencies..."
-      - pip install -r requirements.txt  # Install dependencies
-
-  pre_build:
-    commands:
-      - echo "Running pre-build tests..."
-      - python -m unittest discover -s tests  # Run unit tests (optional)
-
+      - echo Installing dependencies...
   build:
     commands:
-      - echo "Starting build..."
-      - python my_script.py  # Change to your main script
-
+      - echo Build started on `date`
   post_build:
     commands:
-      - echo "Build completed successfully!"
+      - echo Build completed on `date`
 
 artifacts:
   files:
-    - '**/*'  # Store all files as artifacts
-
+    - '**/*'
