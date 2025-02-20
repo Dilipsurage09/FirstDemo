@@ -13,12 +13,15 @@ phases:
       - ls -l
       - echo Searching for zip file
       - find . -name "*.zip"
+      - echo Creating temp directory
+      - mkdir -p /tmp/unzipped
       - echo Unzipping source code
-      - unzip -o $(find . -name "*.zip" | head -n 1) -d /var/www/html
+      - unzip -o $(find . -name "*.zip" | head -n 1) -d /tmp/unzipped
+      - echo Listing files in /tmp/unzipped
+      - ls -l /tmp/unzipped
   post_build:
     commands:
       - echo Build completed on `date`
 artifacts:
   files:
     - '**/*'
-
