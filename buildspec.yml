@@ -4,8 +4,8 @@ phases:
   install:
     commands:
       - echo Installing dependencies
-      - yum update -y
-      - yum install -y unzip curl
+      - apt update -y
+      - apt install -y unzip curl
   build:
     commands:
       - echo Build started on `date`
@@ -21,3 +21,4 @@ phases:
 artifacts:
   files:
     - '**/*'
+
