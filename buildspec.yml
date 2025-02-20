@@ -4,12 +4,12 @@ phases:
   install:
     commands:
       - echo Installing dependencies
-      - yum update -y
-      - yum install -y unzip curl
+      - apt-get update -y
+      - apt-get install -y unzip curl
   build:
     commands:
       - echo Build started on `date`
-      - echo Unzipping source code
+      - echo Building the application
       - unzip source-code.zip -d /var/www/html
   post_build:
     commands:
@@ -17,4 +17,3 @@ phases:
 artifacts:
   files:
     - '**/*'
-
