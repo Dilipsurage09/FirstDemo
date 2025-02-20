@@ -4,7 +4,7 @@ phases:
   install:
     commands:
       - echo Installing dependencies
-      - yum update -y                      # Use yum instead of apt
+      - yum update -y                      
       - yum install -y unzip curl
   build:
     commands:
@@ -17,10 +17,11 @@ phases:
       - if [ -z "$ZIP_FILE" ]; then echo "No zip file found. Exiting." && exit 1; fi
       - echo Creating temp directory
       - mkdir -p /tmp/unzipped
+      - chmod 777 /tmp/unzipped                      # Ensure full permissions
       - echo Checking zip file integrity
-      - unzip -l "$ZIP_FILE"
+      - unzip -t "$ZIP_FILE" || (echo "Zip file is corrupted. Exiting." && exit 1)
       - echo Unzipping source code
-      - unzip -o "$ZIP_FILE" -d /tmp/unzipped
+      - unzip -o "$ZIP_FILE" -d /tmp/unzipped || (echo "Unzip failed. Exiting." && exit 1)
       - echo Listing files in /tmp/unzipped
       - ls -l /tmp/unzipped
   post_build:
