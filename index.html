@@ -22,10 +22,17 @@
                     return response.json();
                 })
                 .then(data => {
+                    // Parse the body of the response
+                    const responseBody = JSON.parse(data.body);
+
+                    // Get the files array from the parsed body
+                    const files = responseBody.files;
+
                     const fileList = document.getElementById("file-list");
                     fileList.innerHTML = '';
-                    if (data.files && data.files.length > 0) {
-                        data.files.forEach(file => {
+
+                    if (files && files.length > 0) {
+                        files.forEach(file => {
                             const listItem = document.createElement("li");
                             listItem.textContent = file;
                             fileList.appendChild(listItem);
