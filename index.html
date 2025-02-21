@@ -21,12 +21,11 @@
             
             const responseData = await response.json();
          const data = JSON.parse(responseData.body);
-  // Debug line
+
 
             const imageContainer = document.getElementById('image-container');
             imageContainer.innerHTML = '';
 
-            // Check if imageUrls is an array
             if (Array.isArray(data.imageUrls)) {
                 data.imageUrls.forEach(url => {
                     const img = document.createElement('img');
