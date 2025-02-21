@@ -1,2 +1,30 @@
 <h1>HelloS<h1>
   <h1>hello for ggit<h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>S3 Bucket Files</title>
+    <script>
+        async function getS3Files() {
+            try {
+                const response = await fetch('<API_GATEWAY_URL>');
+                const data = await response.json();
+                const container = document.getElementById('s3-files');
+                container.innerHTML = '';
+                data.files.forEach(file => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = file;
+                    container.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error('Error fetching S3 files:', error);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>S3 Bucket Files</h1>
+    <button onclick="getS3Files()">Show Files</button>
+    <ul id="s3-files"></ul>
+</body>
+</html>
