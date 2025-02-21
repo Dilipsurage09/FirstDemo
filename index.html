@@ -11,28 +11,39 @@
     <ul id="file-list"></ul>
 
     <script>
-      document.getElementById("fetch-images").addEventListener("click", async () => {
-    try {
-        const response = await fetch("https://5uteopkz5j.execute-api.us-east-1.amazonaws.com/q");
-        const data = await response.json();
-        
-        const imageContainer = document.getElementById("image-container");
-        imageContainer.innerHTML = ''; // Clear existing images
-        
-        // Display images using URLs
-        data.imageUrls.forEach(url => {
-            const img = document.createElement("img");
-            img.src = url;
-            img.alt = "Image";
-            img.style.maxWidth = "200px";
-            img.style.margin = "10px";
-            imageContainer.appendChild(img);
-        });
-    } catch (error) {
-        console.error("Error fetching images:", error);
-        alert("Failed to retrieve images. Check console for details.");
-    }
+    document.addEventListener('DOMContentLoaded', () => {
+    const button = document.getElementById('fetch-images');
+    const imageContainer = document.getElementById('image-container');
+
+    button.addEventListener('click', () => {
+        fetch('https://5uteopkz5j.execute-api.us-east-1.amazonaws.com/q')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                imageContainer.innerHTML = '';
+                if (data.files.length > 0) {
+                    data.files.forEach(url => {
+                        const img = document.createElement('img');
+                        img.src = url;
+                        img.style.width = '200px';
+                        img.style.margin = '10px';
+                        imageContainer.appendChild(img);
+                    });
+                } else {
+                    imageContainer.innerHTML = '<p>No images found.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching files:', error);
+                imageContainer.innerHTML = '<p>Failed to retrieve files. Check console for details.</p>';
+            });
+    });
 });
+
 
     </script>
 </body>
