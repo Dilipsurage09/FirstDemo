@@ -1,30 +1,44 @@
-<h1>HelloS<h1>
-  <h1>hello for ggit<h1>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>S3 Bucket Files</title>
-    <script>
-        async function getS3Files() {
-            try {
-                const response = await fetch('https://5uteopkz5j.execute-api.us-east-1.amazonaws.com/q');
-                const data = await response.json();
-                const container = document.getElementById('s3-files');
-                container.innerHTML = '';
-                data.files.forEach(file => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = file;
-                    container.appendChild(listItem);
-                });
-            } catch (error) {
-                console.error('Error fetching S3 files:', error);
-            }
-        }
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S3 Files Viewer</title>
 </head>
 <body>
     <h1>S3 Bucket Files</h1>
-    <button onclick="getS3Files()">Show Files</button>
-    <ul id="s3-files"></ul>
+    <button id="fetch-files">Show Files</button>
+    <ul id="file-list"></ul>
+
+    <script>
+        document.getElementById("fetch-files").addEventListener("click", function() {
+            const apiUrl = 'https://5uteopkz5j.execute-api.us-east-1.amazonaws.com/q'; 
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const fileList = document.getElementById("file-list");
+                    fileList.innerHTML = '';
+                    if (data.files && data.files.length > 0) {
+                        data.files.forEach(file => {
+                            const listItem = document.createElement("li");
+                            listItem.textContent = file;
+                            fileList.appendChild(listItem);
+                        });
+                    } else {
+                        fileList.innerHTML = '<li>No files found</li>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching files:', error);
+                    alert('Failed to retrieve files. Check console for details.');
+                });
+        });
+    </script>
 </body>
 </html>
